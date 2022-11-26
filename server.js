@@ -1,28 +1,91 @@
+//Subin's code
 const HTTP_PORT = process.env.PORT || 8080;
-const exp = require("express");
-const app = exp();
 const path = require("path");
 const bodyParser = require("body-parser");
 const handlebars = require("express-handlebars");
-app.use(exp.static("static"));
+const express = require("express");
+const app = express();
+const multer = require("multer");
+const cloudinary = require("cloudinary").v2;
+const streamifier = require("streamifier");
+const clientSessions = require("client-sessions");
+const stripJs = require("strip-js");
+const Article = require("./edit-service.js");
+var fs=require('fs');
+
+app.use(express.static("static"));
 
 app.engine(".hbs", handlebars.engine({ extname: ".hbs" }));
 app.set("view engine", ".hbs");
 app.use(bodyParser.urlencoded({ extended: true }));
-
+const upload = multer();
 //mongoose connection setup
 const mongoose = require("mongoose");
 
 //mongoose registration schema setup
-const register = mongoose.createConnection("mongodb+srv://srnazeer:Mongoguy123@senecaweb.d5smcuf.mongodb.net/?retryWrites=true&w=majority");
-const registerSchema = new mongoose.Schema({firstname: String,lastname: String, email: String, password: String, confirmpassword: String, phn: String, address: String});
+const register = mongoose.createConnection(
+  "mongodb+srv://srnazeer:Mongoguy123@senecaweb.d5smcuf.mongodb.net/?retryWrites=true&w=majority"
+);
+const registerSchema = new mongoose.Schema({
+  firstname: String,
+  lastname: String,
+  email: String,
+  password: String,
+  confirmpassword: String,
+  phn: String,
+  address: String,
+});
+
 
 //mongoose blog schema setup
-const blog = mongoose.createConnection("mongodb+srv://srnazeer:Mongoguy123@senecaweb.d5smcuf.mongodb.net/?retryWrites=true&w=majority");
+const blog = mongoose.createConnection(
+  "mongodb+srv://srnazeer:Mongoguy123@senecaweb.d5smcuf.mongodb.net/?retryWrites=true&w=majority"
+);
 const blogSchema = new mongoose.Schema({ blog: String });
 
 const loginDetails = register.model("registration", registerSchema);
 const blogDetails = blog.model("blog", blogSchema);
+
+app.use(
+  clientSessions({
+    cookieName: "session",
+    secret: "secretSession",
+    duration: 2 * 60 * 1000,
+    activeDuration: 1000 * 60,
+  })
+);
+
+app.use(function (req, res, next) {
+  res.locals.session = req.session;
+  next();
+});
+
+//declare function ensure login
+
+function ensureLogin(req, res, next) {
+  if (!req.session.user) {
+    res.redirect("/login");
+  } else {
+    next();
+  }
+}
+// cloudinary.config({
+//   cloud_name: "srnazeer",
+//   api_key: "159222624719573",
+//   api_secret: "oHvjhNJw9QXruZ_R5-6n5s7hwro",
+//   secure: true,
+// });
+
+app.use(function (req, res, next) {
+  let route = req.path.substring(1);
+  app.locals.activeRoute =
+    "/" +
+    (isNaN(route.split("/")[1])
+      ? route.replace(/\/(?!.*)/, "")
+      : route.replace(/\/(.*)/, ""));
+  app.locals.viewingCategory = req.query.category;
+  next();
+});
 
 //routes
 app.get("/", function (req, res) {
@@ -105,7 +168,7 @@ app.get("/login", function (req, res) {
 
 app.post("/login", function (req, res) {
   var loginData = {
-    user: req.body.username,
+    user: req.body.email,
     password: req.body.password,
   };
 
@@ -128,7 +191,9 @@ app.post("/login", function (req, res) {
       .find({ email: loginData.user, password: loginData.password })
       .exec()
       .then((data) => {
-        if (data) {
+        //if the user is valid create a session
+        if (data.length > 0) {
+          req.session.user = data[0];
           res.render("dashboard", {
             firstname: data.firstname,
             lastname: data.lastname,
@@ -148,12 +213,93 @@ app.post("/login", function (req, res) {
     //res.render("dashboard", { layout: false });
   }
 });
+app.get("/addArticle", ensureLogin, function (req, res) {
+  console.log("addArticle");
+  res.render("addArticle", { layout: false });
+});
+
+
+app.post("/addArticle", ensureLogin, (req, res) => {
+  console.log("i am here");
+  console.log(req.body);
+  //get the image from the request and then savae it locally and add the path to the request body
+  req.body.image="image.png";
+  Article.addArticle(req.body)
+    .then((data) => {
+      console.log("everything is fine");
+      res.redirect("/articles");
+    })
+    .catch((err) => {
+      console.log("error");
+      res.render("404", { message: err });
+    });
+});
+
+app.get("/articles", ensureLogin, (req, res) => {
+  if (req.query.minDate) {
+    Article.getArticleByMinDate(req.query.minDate)
+      .then((data) => {
+        if (data.length == 0) {
+          res.render("articles", { message: "No more articles", layout: false });
+          return;
+        }
+        res.render("articles", { articles: data ,layout: false});
+      })
+      .catch((err) => {
+        res.render("articles", { message: err,layout: false });
+      });
+  } else {
+    Article.getAllArticles()
+      .then((data) => {
+        res.render("articles", { articles: data,layout:false });
+      })
+      .catch((err) => {
+        res.render("articles", { message: err ,layout:false});
+      });
+  }
+});
+
+app.get("/articles/:id", ensureLogin, (req, res) => {
+  Article.getArticleById(req.params.id)
+    .then((data) => {
+      res.render("article", { article: data });
+    })
+    .catch((err) => {
+      res.render("article", { message: err });
+    });
+});
+
+app.get("/articles/delete/:id", ensureLogin, (req, res) => {
+  Article.deleteArticle(req.params.id)
+    .then((data) => {
+      res.redirect("/articles");
+    })
+    .catch((err) => {
+      res.render("articles", { message: err });
+    });
+});
+
+app.get("/articles/edit/:id", ensureLogin, (req, res) => {
+  Article.getArticleById(req.params.id)
+    .then((data) => {
+      res.render("editArticle", { article: data });
+    })
+    .catch((err) => {
+      res.render("articles", { message: err });
+    });
+});
+
 
 app.use(function (req, res) {
   res.status(404).send("Page not found");
 });
 
 var port = process.env.PORT || 8080;
-app.listen(port, function () {
-  console.log("Express http server listening on port " + port);
-});
+
+Article.initialize().then(
+  app.listen(port, function () {
+    console.log("Express http server listening on port " + port);
+  })
+)
+
+
