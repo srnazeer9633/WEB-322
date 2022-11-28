@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Login</title>
+  <title>Add Article</title>
 
   <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
   <!-- Font Awesome icons (free version)-->
@@ -17,30 +17,9 @@
     rel="stylesheet" type="text/css" />
   <!-- Core theme CSS (includes Bootstrap)-->
   <link rel="stylesheet" href="styles.css" />
-  
 </head>
-
 <body>
-  <!-- Navigation-->
-  <!-- <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
-            <div class="container px-4 px-lg-5">
-                <a class="navbar-brand" href="index.html">web322</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                    Menu
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <ul class="navbar-nav ms-auto py-4 py-lg-0">
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.html">Home</a></li>
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="about.html">About</a></li>
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="post.html">Sample Post</a></li>
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="contact.html">Contact</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav> -->
-  <!-- Page Header-->
-     <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+  <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
     <div class="container px-4 px-lg-5">
       <a class="navbar-brand" href="blog.html">web322</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
@@ -57,9 +36,7 @@
         </ul>
       </div>
     </div>
-  </nav> 
-
-
+  </nav>
   <header class="masthead" style="background-image: url('contact-bg.jpg')">
     <div class="container position-relative px-4 px-lg-5">
       <div class="row gx-4 gx-lg-5 justify-content-center">
@@ -86,7 +63,7 @@
               <p style="color:rgb(46, 43, 43);">{{specialError}}</p>
               <div class="form-floating">
                 <input class="form-control" id="title" type="title" placeholder="Enter your title..."
-                  data-sb-validations="required,email" name="Title"/>
+                  data-sb-validations="required,email" name="Title" />
                 <label for="title">Title !</label>
                 <div class="invalid-feedback" data-sb-feedback="title:required">An title is required.</div>
                 <div class="invalid-feedback" data-sb-feedback="email:email">Email is not valid.</div>
@@ -100,39 +77,34 @@
               <br />
               <div class="form-floating">
                 <textarea class="form-control" id="content" type="content" placeholder="Enter content..."
-                  data-sb-validations="required" name="Content" > </textarea> 
+                  data-sb-validations="required" name="Content"> </textarea>
                 <label for="password">Content !</label>
                 <div class="invalid-feedback" data-sb-feedback="password:required">A content is required.</div>
               </div><br>
               <div class="form-floating">
-                <input class="form-control" id="image" type="file" placeholder="Enter image..."
-                  data-sb-validations="required" name="Image" />
+                <input type="text" name="Image" value="" placeholder="Enter the image link" class="form-control" />
                 <label for="password">Image !</label>
                 <div class="invaild-feedback" data-sb-feedback="image:required">A image is required.</div>
-    
-
-              <!-- Submit success message-->
-              <!---->
-              <!-- Submit success message-->
-              <!---->
-              <!-- This is what your users will see when the form-->
-              <!-- has successfully submitted-->
-             
-
-              <div class="text-center text-lg-start mt-4 pt-2">
+                <!-- Submit success message-->
+                <!---->
+                <!-- Submit success message-->
+                <!---->
+                <!-- This is what your users will see when the form-->
+                <!-- has successfully submitted-->
+                <div class="text-center text-lg-start mt-4 pt-2">
                   <button type="submit" class="btn btn-primary btn-lg"
                     style="padding-left: 2.5rem; padding-right: 2.5rem;">Submit</button>
                   <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="/registration"
                       class="link-danger">Register</a></p>
                 </div>
-              <!-- Submit error message-->
-              <!---->
-              <!-- This is what your users will see when there is-->
-              <!-- an error submitting the form-->
-              <div class="d-none" id="submitErrorMessage">
-                <div class="text-center text-danger mb-3">Error sending message!</div>
-              </div>
-              <!-- Submit Button-->
+                <!-- Submit error message-->
+                <!---->
+                <!-- This is what your users will see when there is-->
+                <!-- an error submitting the form-->
+                <div class="d-none" id="submitErrorMessage">
+                  <div class="text-center text-danger mb-3">Error sending message!</div>
+                </div>
+                <!-- Submit Button-->
             </form>
           </div>
         </div>
@@ -181,5 +153,4 @@
   <script src="js/scripts.js"></script>
   <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
 </body>
-
 </html>

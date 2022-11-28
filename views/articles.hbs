@@ -2,8 +2,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {{!--
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
-    <title>Blog</title>
+    --}}
+    <title>ARTICLE</title>
     <link rel="icon" type="image/png" href="/images/logo.png">
     <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet"
@@ -13,13 +15,61 @@
         rel="stylesheet" type="text/css" />
     <link href="styles.css" rel="stylesheet" />
 </head>
+<body>
 
-<center>
+
+ <!-- Navigation-->
+     <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+    <div class="container px-4 px-lg-5">
+      <a class="navbar-brand" href="blog.html">web322</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        Menu
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+         <ul class="navbar-nav ms-auto py-4 py-lg-0 bg-dark">
+          <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/login">Login</a></li>
+          <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/registration">Register</a></li>
+          <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/articles">read_more</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav> 
+  <br/>
+  <br/>
+
+
 {{#each articles}}
-
-<h2 class="post-title">{{this.Title}}</h2>
-<p class="post-subtitle">{{this.Content}}</p>
-<hr/>
-
-{{/each}}
+<center>
+    <div class="card-body" style="width: 38rem" ;>
+        <div class="card shadow-sm">
+            <h2 class="post-title">{{this.Title}}</h2>
+            <p class="post-subtitle">{{this.Content}}</p>
+            <p class="card-text">{{this.Date}}</p>
+            <hr />
+            <img src="{{this.Image}}" alt="image" class="bd-placeholder-img card-img-top" width="auto" height="auto">
+            <title>Placeholder</title>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                    <form action="/articles" method="post">
+                        <tr>
+                            <td><a href="/articles?id={{id}}">{{id}}</a></td>
+                            <td><a href="/articles?Image={{id}}">{{Image}}</a></td>
+                            <td><a class="btn btn-sm btn-outline-secondary" href="/articles/delete/{{id}}"> remove </a>
+                            </td>
+                            <td class="text-right"><a class="btn btn-sm btn-outline-secondary"
+                                    href="/articles/update/{{id}}"> edit </a></td>
+                        </tr>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
 </center>
+{{/each}}
+
+</body>
+
