@@ -1,17 +1,13 @@
 //Subin's code
-const HTTP_PORT = process.env.PORT || 8080;
 const path = require("path");
 const bodyParser = require("body-parser");
 const handlebars = require("express-handlebars");
 const express = require("express");
 const app = express();
 const multer = require("multer");
-const cloudinary = require("cloudinary").v2;
-const streamifier = require("streamifier");
 const clientSessions = require("client-sessions");
-const stripJs = require("strip-js");
 const Article = require("./edit-service.js");
-var fs=require('fs');
+var fs = require("fs");
 
 app.use(express.static("static"));
 
@@ -26,6 +22,7 @@ const mongoose = require("mongoose");
 const register = mongoose.createConnection(
   "mongodb+srv://srnazeer:Mongoguy123@senecaweb.d5smcuf.mongodb.net/?retryWrites=true&w=majority"
 );
+
 const registerSchema = new mongoose.Schema({
   firstname: String,
   lastname: String,
@@ -35,7 +32,6 @@ const registerSchema = new mongoose.Schema({
   phn: String,
   address: String,
 });
-
 
 //mongoose blog schema setup
 const blog = mongoose.createConnection(
@@ -218,12 +214,11 @@ app.get("/addArticle", ensureLogin, function (req, res) {
   res.render("addArticle", { layout: false });
 });
 
-
 app.post("/addArticle", ensureLogin, (req, res) => {
   console.log("i am here");
   console.log(req.body);
   //get the image from the request and then savae it locally and add the path to the request body
-  req.body.image="image.png";
+  req.body.image = "image.png";
   Article.addArticle(req.body)
     .then((data) => {
       console.log("everything is fine");
@@ -240,21 +235,24 @@ app.get("/articles", ensureLogin, (req, res) => {
     Article.getArticleByMinDate(req.query.minDate)
       .then((data) => {
         if (data.length == 0) {
-          res.render("articles", { message: "No more articles", layout: false });
+          res.render("articles", {
+            message: "No more articles",
+            layout: false,
+          });
           return;
         }
-        res.render("articles", { articles: data ,layout: false});
+        res.render("articles", { articles: data, layout: false });
       })
       .catch((err) => {
-        res.render("articles", { message: err,layout: false });
+        res.render("articles", { message: err, layout: false });
       });
   } else {
     Article.getAllArticles()
       .then((data) => {
-        res.render("articles", { articles: data,layout:false });
+        res.render("articles", { articles: data, layout: false });
       })
       .catch((err) => {
-        res.render("articles", { message: err ,layout:false});
+        res.render("articles", { message: err, layout: false });
       });
   }
 });
@@ -270,7 +268,7 @@ app.get("/articles/:id", ensureLogin, (req, res) => {
 });
 
 app.get("/articles/delete/:id", ensureLogin, (req, res) => {
-  Article.deleteArticle(req.params.id)
+  Article.deleteArticleById(req.params.id)
     .then((data) => {
       res.redirect("/articles");
     })
@@ -279,8 +277,8 @@ app.get("/articles/delete/:id", ensureLogin, (req, res) => {
     });
 });
 
-app.get("/articles/edit/:id", ensureLogin, (req, res) => {
-  Article.getArticleById(req.params.id)
+app.get("/articles/update/:id", ensureLogin, (req, res) => {
+  Article.updateArticleById(req.params.id)
     .then((data) => {
       res.render("editArticle", { article: data });
     })
@@ -289,17 +287,15 @@ app.get("/articles/edit/:id", ensureLogin, (req, res) => {
     });
 });
 
-
 app.use(function (req, res) {
   res.status(404).send("Page not found");
 });
 
 var port = process.env.PORT || 8080;
-
 Article.initialize().then(
   app.listen(port, function () {
     console.log("Express http server listening on port " + port);
   })
-)
+);
 
-
+//done by subin raj

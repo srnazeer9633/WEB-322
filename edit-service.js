@@ -22,7 +22,6 @@ var Article = sequelize.define("Article", {
   published: Sequelize.BOOLEAN,
 });
 
-
 exports.initialize = () => {
   return new Promise((resolve, reject) => {
     sequelize
