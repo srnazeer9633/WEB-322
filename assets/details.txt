@@ -1,0 +1,3 @@
+cloud_name: "srnazeer",
+api_key: "159222624719573",
+api_secret: "oHvjhNJw9QXruZ_R5-6n5s7hwro",
