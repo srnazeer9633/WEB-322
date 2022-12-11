@@ -153,3 +153,65 @@ exports.updateArticleById = (id_, ArticleData) => {
       });
   });
 };
+
+exports.createArticle = (ArticleData) => {
+  return new Promise((resolve, reject) => {
+      Article.create(ArticleData)
+          .then((data) => {
+              resolve(data);
+          })
+          .catch(() => {
+              reject("No record Found");
+          });
+  });
+}
+
+//function to edit the article for the admin
+exports.editArticle = (id_, ArticleData) => {
+  return new Promise((resolve, reject) => {
+      Article.update(ArticleData, {
+          where: {
+              id: id_,
+          },
+      })
+          .then(() => {
+              resolve();
+          })
+          .catch(() => {
+              reject("Unable to update post");
+          });
+  });
+}
+
+//function to delete the article for the admin
+exports.deleteArticle = (id_) => {
+  return new Promise((resolve, reject) => {
+      Article.destroy({
+          where: {
+              id: id_,
+          },
+      })
+          .then(() => {
+              resolve();
+          })
+          .catch(() => {
+              reject("Unable to delete post");
+          });
+  });
+}
+
+// function to logout the admin
+exports.logout = (req, res) => {
+  req.session.destroy();
+  res.redirect('/');
+}
+
+
+
+
+
+
+
+
+
+
